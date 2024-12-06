@@ -18,18 +18,18 @@ TIMESTAMP_FMT = "%Y-%m-%d %I:%M:%S %p CET"
 supabase: Client = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
 
 def get_cet_time():
-    cet_tz = pytz.timezone("Asia/Pontianak")
+    cet_tz = pytz.timezone("CET")
     return datetime.now(cet_tz)
 
 def add_message(name, message):
     timestamp = get_cet_time().strftime(TIMESTAMP_FMT)
-    supabase.table("BukuTamu").insert(
+    supabase.table("guestbook").insert(
         {"name": name, "message": message, "timestamp": timestamp}
     ).execute()
 
 def get_messages():
     # Sort by 'id' in descending order to get the latest entries first
-    response = supabase.table("BukuTamu").select("*").order("id", desc=True).execute()
+    response = supabase.table("guestbook").select("*").order("id", desc=True).execute()
     return response.data
 
 def render_message(entry):
@@ -90,16 +90,13 @@ def render_content():
         render_message_list(),
     )
 
-
 @rt("/", methods=["GET"])
 def get():
     return Titled("Sven's Guestbook 📖", render_content())
-
 
 @rt("/submit-message", methods=["POST"])
 def post(name: str, message: str):
     add_message(name, message)
     return render_message_list()
-
 
 serve()
