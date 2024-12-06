@@ -24,7 +24,7 @@ def get_cet_time():
 def add_message(name, message):
     timestamp = get_cet_time().strftime(TIMESTAMP_FMT)
     supabase.table("guestbook").insert(
-        {"name": name, "message": message, "timestamp": timestamp}
+        {"name": name, "messages": message, "timestamp": timestamp}
     ).execute()
 
 def get_messages():
@@ -36,7 +36,7 @@ def render_message(entry):
     return (
         Article(
             Header(f"Name: {entry['name']}"),
-            P(entry["message"]),
+            P(entry["messages"]),
             Footer(Small(Em(f"Posted: {entry['timestamp']}"))),
         ),
     )
