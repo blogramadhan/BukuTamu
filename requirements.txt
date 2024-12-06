@@ -1,0 +1,4 @@
+python-dotenv
+python_fasthtml
+pytz
+supabase
